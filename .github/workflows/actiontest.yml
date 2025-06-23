@@ -27,5 +27,5 @@ jobs:
           REPO: actiontest
         run:
           docker build -t $REPO .
-          docker tage $REPO:latest $NAME/$REPO:latest
+          docker tag $REPO:latest $NAME/$REPO:latest
           docker push $NAME/$REPO:latest
