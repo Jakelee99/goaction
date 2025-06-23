@@ -1,0 +1,31 @@
+name: actiontest
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with: 
+          go-version: 1.15
+      - name: Build
+        run: go build -v ./...
+
+      - name: DockerHub Login
+        uses: docker/login-action@v1
+        with: 
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: build and release to DockerHub
+        env:
+          NAME: hopaper
+          REPO: actiontest
+        run:
+          docker build -t $REPO .
+          docker tage $REPO:latest $NAME/$REPO:latest
+          docker push $NAME/$REPO:latest
